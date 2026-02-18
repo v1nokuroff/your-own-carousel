@@ -17,9 +17,10 @@ module.exports = {
                     'type',
                 ],
                 pathGroups: [
+                    { pattern: 'react*', group: 'external', position: 'before' },
                     { pattern: '@/**', group: 'internal', position: 'before' },
-                    { pattern: '**/*.css', group: 'index', position: 'after' },
                     { pattern: './**', group: 'sibling', position: 'before' },
+                    { pattern: '**/*.css', group: 'index', position: 'after' },
                 ],
                 pathGroupsExcludedImportTypes: ['builtin'],
                 'newlines-between': 'always',

@@ -69,10 +69,6 @@ input::-webkit-inner-spin-button {
 .button:active {
     background-color: #161b22;
 }
-.switcher {
-    margin-left: 20px;
-    margin-top: 10px;
-}
 .button-group {
     gap: 10px;
     display: inline-flex;

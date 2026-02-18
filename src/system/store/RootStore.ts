@@ -1,4 +1,4 @@
-import type { Lang } from '../typings';
+import type { Lang } from '../../typings';
 
 class RootStore {
     private _language: Lang = 'en';
