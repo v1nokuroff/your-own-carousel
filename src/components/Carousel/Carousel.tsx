@@ -1,266 +1,224 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { translations } from "../../translations";
+import { translations } from '../../translations';
 
-import styles from "./Carousel.module.css";
+import styles from './Carousel.module.css';
 
 interface ItemProps {
-  id: number;
-  enabled: boolean;
-  delay: number;
-  position: number;
-  link?: string;
-  path?: string;
-  description?: string;
-  readonly: boolean;
+    id: number;
+    enabled: boolean;
+    delay: number;
+    position: number;
+    link?: string;
+    path?: string;
+    description?: string;
+    readonly: boolean;
 }
 
 type TypeLanguage = {
-  language: "ru" | "en";
+    language: 'ru' | 'en';
 };
 
 const Carousel = ({ language }: TypeLanguage) => {
-  const text = translations[language];
+    const text = translations[language];
 
-  const [slides, setSlides] = useState<ItemProps[]>([]);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
+    const [slides, setSlides] = useState<ItemProps[]>([]);
+    const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
 
-  // Carousel hook
-  useEffect(() => {
-    const enabledSlides = slides
-      .filter((slide) => slide.enabled)
-      .sort((a, b) => a.position - b.position);
+    // Carousel hook
+    useEffect(() => {
+        const enabledSlides = slides.filter((slide) => slide.enabled).sort((a, b) => a.position - b.position);
 
-    if (enabledSlides.length === 0) return;
+        if (enabledSlides.length === 0) return;
 
-    const currentSlide =
-      enabledSlides[currentSlideIndex % enabledSlides.length];
-    const delay = currentSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
+        const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
+        const delay = currentSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
 
-    const timer = setTimeout(() => {
-      setCurrentSlideIndex(
-        (prevIndex: number) => (prevIndex + 1) % enabledSlides.length,
-      );
-    }, delay);
+        const timer = setTimeout(() => {
+            setCurrentSlideIndex((prevIndex: number) => (prevIndex + 1) % enabledSlides.length);
+        }, delay);
 
-    return () => clearTimeout(timer);
-  }, [currentSlideIndex, slides]);
+        return () => clearTimeout(timer);
+    }, [currentSlideIndex, slides]);
 
-  const handleInputChange = (
-    id: number,
-    field: keyof ItemProps,
-    value: string | boolean | number,
-  ) => {
-    setSlides((prevSlides) =>
-      prevSlides.map((slide) =>
-        slide.id === id ? { ...slide, [field]: value } : slide,
-      ),
-    );
-  };
-
-  const handleAddSlide = () => {
-    const newSlide: ItemProps = {
-      id: Date.now(),
-      enabled: false,
-      delay: 3,
-      position: slides.length + 1,
-      link: "",
-      path: "",
-      description: "",
-      readonly: false,
+    const handleInputChange = (id: number, field: keyof ItemProps, value: string | boolean | number) => {
+        setSlides((prevSlides) => prevSlides.map((slide) => (slide.id === id ? { ...slide, [field]: value } : slide)));
     };
-    setSlides((prevSlides) => [...prevSlides, newSlide]);
-  };
 
-  const handleDeleteSlide = (id: number) => {
-    setSlides((prevSlides) => prevSlides.filter((slide) => slide.id !== id));
-  };
+    const handleAddSlide = () => {
+        const newSlide: ItemProps = {
+            id: Date.now(),
+            enabled: false,
+            delay: 3,
+            position: slides.length + 1,
+            link: '',
+            path: '',
+            description: '',
+            readonly: false,
+        };
+        setSlides((prevSlides) => [...prevSlides, newSlide]);
+    };
 
-  const handleEditSlide = (id: number) => {
-    setSlides((prevSlides) =>
-      prevSlides.map((slide) => {
-        if (slide.id === id) {
-          if (!slide.path) {
-            alert(text.fillData);
-            return slide;
-          }
-          return { ...slide, readonly: !slide.readonly, enabled: false };
-        }
-        return slide;
-      }),
+    const handleDeleteSlide = (id: number) => {
+        setSlides((prevSlides) => prevSlides.filter((slide) => slide.id !== id));
+    };
+
+    const handleEditSlide = (id: number) => {
+        setSlides((prevSlides) =>
+            prevSlides.map((slide) => {
+                if (slide.id === id) {
+                    if (!slide.path) {
+                        alert(text.fillData);
+                        return slide;
+                    }
+                    return { ...slide, readonly: !slide.readonly, enabled: false };
+                }
+                return slide;
+            })
+        );
+    };
+
+    const enabledSlides = slides.filter((slide) => slide.enabled).sort((a, b) => a.position - b.position);
+
+    const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
+
+    return (
+        <div className={styles.container}>
+            {/* Slides carousel block */}
+            <div className={styles.carousel}>
+                <h2>{text.slideCarousel}</h2>
+                {enabledSlides.length > 0 ? (
+                    currentSlide && (
+                        <div>
+                            <a href={currentSlide.link} target="_blank" rel="noreferrer noopener">
+                                <img
+                                    src={currentSlide.path || 'https://via.placeholder.com/600x300'}
+                                    alt={`Slide ${currentSlide.position}`}
+                                    className={styles.image}
+                                />
+                            </a>
+                            <p className={styles.label}>{currentSlide.description || text.noDescription}</p>
+                        </div>
+                    )
+                ) : (
+                    <p>{text.noEnabledSlides}</p>
+                )}
+            </div>
+
+            {/* Creating and editing slides Block */}
+            <div className={styles.editor}>
+                <h2 style={{ textAlign: 'center' }}>{text.slideManagement}</h2>
+                {slides.map((slide) => (
+                    <div className={styles.slideForm} key={slide.id}>
+                        <input
+                            className={`${styles.input} ${styles.checkbox}`}
+                            readOnly={slide.readonly}
+                            type="checkbox"
+                            checked={slide.enabled}
+                            onChange={
+                                (e) => handleInputChange(slide.id, 'enabled', e.target.checked)
+                                //   handleEditSlide(slide.id, 'enable')
+                            }
+                        />
+                        <label>{text.enable}</label>
+                        <div>
+                            <label>
+                                {text.delay}:{' '}
+                                {slide.readonly ? (
+                                    slide.delay
+                                ) : (
+                                    <input
+                                        className={styles.input}
+                                        style={{ width: '300px' }}
+                                        readOnly={slide.readonly}
+                                        type="number"
+                                        value={slide.delay}
+                                        onChange={(e) => handleInputChange(slide.id, 'delay', +e.target.value)}
+                                    />
+                                )}
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                {text.position}:{' '}
+                                {slide.readonly ? (
+                                    slide.position
+                                ) : (
+                                    <input
+                                        className={styles.input}
+                                        readOnly={slide.readonly}
+                                        type="number"
+                                        value={slide.position}
+                                        onChange={(e) => handleInputChange(slide.id, 'position', +e.target.value)}
+                                    />
+                                )}
+                            </label>
+                        </div>
+                        <div className={styles.label}>
+                            <label>
+                                {text.link}:{' '}
+                                {slide.readonly ? (
+                                    slide.link
+                                ) : (
+                                    <input
+                                        className={styles.input}
+                                        readOnly={slide.readonly}
+                                        type="text"
+                                        value={slide.link}
+                                        onChange={(e) => handleInputChange(slide.id, 'link', e.target.value)}
+                                    />
+                                )}
+                            </label>
+                        </div>
+                        <div className={styles.label}>
+                            <label>
+                                {text.imageURL}:{' '}
+                                {slide.readonly ? (
+                                    slide.path
+                                ) : (
+                                    <input
+                                        className={styles.input}
+                                        readOnly={slide.readonly}
+                                        type="text"
+                                        value={slide.path}
+                                        onChange={(e) => handleInputChange(slide.id, 'path', e.target.value)}
+                                    />
+                                )}
+                            </label>
+                        </div>
+                        <div className={styles.label}>
+                            <label>
+                                {text.description}:{' '}
+                                {slide.readonly ? (
+                                    slide.description
+                                ) : (
+                                    <textarea
+                                        className={styles.input}
+                                        readOnly={slide.readonly}
+                                        value={slide.description}
+                                        onChange={(e) => handleInputChange(slide.id, 'description', e.target.value)}
+                                        rows={3}
+                                        style={{ width: '100%', resize: 'vertical' }}
+                                    />
+                                )}
+                            </label>
+                        </div>
+                        <div className={`${styles.buttonGroup} ${styles.form}`}>
+                            <button className={styles.button} onClick={() => handleDeleteSlide(slide.id)}>
+                                {text.deleteSlide}
+                            </button>
+                            <button className={styles.button} onClick={() => handleEditSlide(slide.id)}>
+                                {slide.readonly ? text.edit : text.save}
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                <button className={`${styles.button} ${styles.create}`} onClick={handleAddSlide}>
+                    {text.createNewSlide}
+                </button>
+            </div>
+        </div>
     );
-  };
-
-  const enabledSlides = slides
-    .filter((slide) => slide.enabled)
-    .sort((a, b) => a.position - b.position);
-
-  const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
-
-  return (
-    <div className={styles.container}>
-      {/* Slides carousel block */}
-      <div className={styles.carousel}>
-        <h2>{text.slideCarousel}</h2>
-        {enabledSlides.length > 0 ? (
-          currentSlide && (
-            <div>
-              <a
-                href={currentSlide.link}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                <img
-                  src={
-                    currentSlide.path || "https://via.placeholder.com/600x300"
-                  }
-                  alt={`Slide ${currentSlide.position}`}
-                  className={styles.image}
-                />
-              </a>
-              <p className={styles.label}>
-                {currentSlide.description || text.noDescription}
-              </p>
-            </div>
-          )
-        ) : (
-          <p>{text.noEnabledSlides}</p>
-        )}
-      </div>
-
-      {/* Creating and editing slides Block */}
-      <div className={styles.editor}>
-        <h2 style={{ textAlign: "center" }}>{text.slideManagement}</h2>
-        {slides.map((slide) => (
-          <div className={styles.slideForm} key={slide.id}>
-            <input
-              className={`${styles.input} ${styles.checkbox}`}
-              readOnly={slide.readonly}
-              type="checkbox"
-              checked={slide.enabled}
-              onChange={
-                (e) => handleInputChange(slide.id, "enabled", e.target.checked)
-                //   handleEditSlide(slide.id, 'enable')
-              }
-            />
-            <label>{text.enable}</label>
-            <div>
-              <label>
-                {text.delay}:{" "}
-                {slide.readonly ? (
-                  slide.delay
-                ) : (
-                  <input
-                    className={styles.input}
-                    style={{ width: "300px" }}
-                    readOnly={slide.readonly}
-                    type="number"
-                    value={slide.delay}
-                    onChange={(e) =>
-                      handleInputChange(slide.id, "delay", +e.target.value)
-                    }
-                  />
-                )}
-              </label>
-            </div>
-            <div>
-              <label>
-                {text.position}:{" "}
-                {slide.readonly ? (
-                  slide.position
-                ) : (
-                  <input
-                    className={styles.input}
-                    readOnly={slide.readonly}
-                    type="number"
-                    value={slide.position}
-                    onChange={(e) =>
-                      handleInputChange(slide.id, "position", +e.target.value)
-                    }
-                  />
-                )}
-              </label>
-            </div>
-            <div className={styles.label}>
-              <label>
-                {text.link}:{" "}
-                {slide.readonly ? (
-                  slide.link
-                ) : (
-                  <input
-                    className={styles.input}
-                    readOnly={slide.readonly}
-                    type="text"
-                    value={slide.link}
-                    onChange={(e) =>
-                      handleInputChange(slide.id, "link", e.target.value)
-                    }
-                  />
-                )}
-              </label>
-            </div>
-            <div className={styles.label}>
-              <label>
-                {text.imageURL}:{" "}
-                {slide.readonly ? (
-                  slide.path
-                ) : (
-                  <input
-                    className={styles.input}
-                    readOnly={slide.readonly}
-                    type="text"
-                    value={slide.path}
-                    onChange={(e) =>
-                      handleInputChange(slide.id, "path", e.target.value)
-                    }
-                  />
-                )}
-              </label>
-            </div>
-            <div className={styles.label}>
-              <label>
-                {text.description}:{" "}
-                {slide.readonly ? (
-                  slide.description
-                ) : (
-                  <textarea
-                    className={styles.input}
-                    readOnly={slide.readonly}
-                    value={slide.description}
-                    onChange={(e) =>
-                      handleInputChange(slide.id, "description", e.target.value)
-                    }
-                    rows={3}
-                    style={{ width: "100%", resize: "vertical" }}
-                  />
-                )}
-              </label>
-            </div>
-            <div className={`${styles.buttonGroup} ${styles.form}`}>
-              <button
-                className={styles.button}
-                onClick={() => handleDeleteSlide(slide.id)}
-              >
-                {text.deleteSlide}
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => handleEditSlide(slide.id)}
-              >
-                {slide.readonly ? text.edit : text.save}
-              </button>
-            </div>
-          </div>
-        ))}
-        <button
-          className={`${styles.button} ${styles.create}`}
-          onClick={handleAddSlide}
-        >
-          {text.createNewSlide}
-        </button>
-      </div>
-    </div>
-  );
 };
 
 export default Carousel;

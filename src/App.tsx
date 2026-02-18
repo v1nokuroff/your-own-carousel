@@ -1,31 +1,32 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import Carousel from "./components/Carousel/Carousel";
+import Carousel from '@/components/Carousel/Carousel';
+import { Lang } from '@/typings';
 
-import styles from "./App.module.css";
+import styles from './App.module.css';
 
-export type TypeLanguage = "en" | "ru";
+export type TypeLanguage = Lang;
 
 const App = () => {
-  const [language, setLanguage] = useState<TypeLanguage>("en");
-  const LanguageSwitcher = () => {
+    const [language, setLanguage] = useState<TypeLanguage>('en');
+    const LanguageSwitcher = () => {
+        return (
+            <div className={styles.switcher}>
+                <button className={styles.button} onClick={() => setLanguage('ru')}>
+                    RU
+                </button>
+                <button className={styles.button} onClick={() => setLanguage('en')}>
+                    EN
+                </button>
+            </div>
+        );
+    };
     return (
-      <div className={styles.switcher}>
-        <button className={styles.button} onClick={() => setLanguage("ru")}>
-          RU
-        </button>
-        <button className={styles.button} onClick={() => setLanguage("en")}>
-          EN
-        </button>
-      </div>
+        <div className={'App'}>
+            <LanguageSwitcher />
+            <Carousel language={language} />
+        </div>
     );
-  };
-  return (
-    <div className={"App"}>
-      <LanguageSwitcher />
-      <Carousel language={language} />
-    </div>
-  );
 };
 
 export default App;
