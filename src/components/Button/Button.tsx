@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import styles from "./Button.module.css";
+import styles from './Button.module.css';
 
 type ButtonProps = {
-  onClick: () => void;
+    onClick: () => void;
 };
 
 export const Button = ({ onClick }: ButtonProps) => {
-  return null;
+    return null;
 };
