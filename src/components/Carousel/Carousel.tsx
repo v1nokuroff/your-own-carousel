@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { translations } from "./language/translations";
+
+import { translations } from "../../translations";
+
+import styles from "./Carousel.module.css";
+
 interface ItemProps {
   id: number;
   enabled: boolean;
@@ -10,32 +14,33 @@ interface ItemProps {
   description?: string;
   readonly: boolean;
 }
+
 type TypeLanguage = {
-  language: 'ru' | 'en',
-}
+  language: "ru" | "en";
+};
 
-
-
-const Carousel:React.FC<TypeLanguage> = ({language}) => {
+const Carousel = ({ language }: TypeLanguage) => {
   const text = translations[language];
 
   const [slides, setSlides] = useState<ItemProps[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
 
-
-  // Carousel function
+  // Carousel hook
   useEffect(() => {
     const enabledSlides = slides
-        .filter((slide) => slide.enabled)
-        .sort((a, b) => a.position - b.position);
+      .filter((slide) => slide.enabled)
+      .sort((a, b) => a.position - b.position);
 
     if (enabledSlides.length === 0) return;
 
-    const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
+    const currentSlide =
+      enabledSlides[currentSlideIndex % enabledSlides.length];
     const delay = currentSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
 
     const timer = setTimeout(() => {
-      setCurrentSlideIndex((prevIndex) => (prevIndex + 1) % enabledSlides.length);
+      setCurrentSlideIndex(
+        (prevIndex: number) => (prevIndex + 1) % enabledSlides.length,
+      );
     }, delay);
 
     return () => clearTimeout(timer);
@@ -44,12 +49,12 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
   const handleInputChange = (
     id: number,
     field: keyof ItemProps,
-    value: string | boolean | number
+    value: string | boolean | number,
   ) => {
     setSlides((prevSlides) =>
       prevSlides.map((slide) =>
-        slide.id === id ? { ...slide, [field]: value } : slide
-      )
+        slide.id === id ? { ...slide, [field]: value } : slide,
+      ),
     );
   };
 
@@ -82,7 +87,7 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
           return { ...slide, readonly: !slide.readonly, enabled: false };
         }
         return slide;
-      })
+      }),
     );
   };
 
@@ -93,49 +98,52 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
   const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
 
   return (
-    <div className='container' >
+    <div className={styles.container}>
       {/* Slides carousel block */}
-      <div className='carousel' >
+      <div className={styles.carousel}>
         <h2>{text.slideCarousel}</h2>
         {enabledSlides.length > 0 ? (
-          currentSlide ? (
+          currentSlide && (
             <div>
-              <a href={currentSlide.link} target="_blank">
+              <a
+                href={currentSlide.link}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
                 <img
-                  src={currentSlide.path || "https://via.placeholder.com/600x300"}
+                  src={
+                    currentSlide.path || "https://via.placeholder.com/600x300"
+                  }
                   alt={`Slide ${currentSlide.position}`}
-                  className='image'
+                  className={styles.image}
                 />
               </a>
-              <p className='label'>{currentSlide.description || text.noDescription}</p>
+              <p className={styles.label}>
+                {currentSlide.description || text.noDescription}
+              </p>
             </div>
-          ) : null
+          )
         ) : (
           <p>{text.noEnabledSlides}</p>
         )}
       </div>
 
       {/* Creating and editing slides Block */}
-      <div className='editor'>
+      <div className={styles.editor}>
         <h2 style={{ textAlign: "center" }}>{text.slideManagement}</h2>
         {slides.map((slide) => (
-          <div
-            className='slide-form'
-            key={slide.id}
-          >
+          <div className={styles.slideForm} key={slide.id}>
             <input
-              className='input checkbox'
+              className={`${styles.input} ${styles.checkbox}`}
               readOnly={slide.readonly}
               type="checkbox"
               checked={slide.enabled}
-              onChange={(e) =>
-                handleInputChange(slide.id, "enabled", e.target.checked)
+              onChange={
+                (e) => handleInputChange(slide.id, "enabled", e.target.checked)
                 //   handleEditSlide(slide.id, 'enable')
               }
             />
-            <label>
-              {text.enable}
-            </label>
+            <label>{text.enable}</label>
             <div>
               <label>
                 {text.delay}:{" "}
@@ -143,7 +151,7 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
                   slide.delay
                 ) : (
                   <input
-                    className='input'
+                    className={styles.input}
                     style={{ width: "300px" }}
                     readOnly={slide.readonly}
                     type="number"
@@ -162,7 +170,7 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
                   slide.position
                 ) : (
                   <input
-                    className='input'
+                    className={styles.input}
                     readOnly={slide.readonly}
                     type="number"
                     value={slide.position}
@@ -173,14 +181,14 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
                 )}
               </label>
             </div>
-            <div className='label'>
+            <div className={styles.label}>
               <label>
                 {text.link}:{" "}
                 {slide.readonly ? (
                   slide.link
                 ) : (
                   <input
-                    className='input'
+                    className={styles.input}
                     readOnly={slide.readonly}
                     type="text"
                     value={slide.link}
@@ -191,14 +199,14 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
                 )}
               </label>
             </div>
-            <div className='label'>
+            <div className={styles.label}>
               <label>
                 {text.imageURL}:{" "}
                 {slide.readonly ? (
                   slide.path
                 ) : (
                   <input
-                    className='input'
+                    className={styles.input}
                     readOnly={slide.readonly}
                     type="text"
                     value={slide.path}
@@ -209,14 +217,14 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
                 )}
               </label>
             </div>
-            <div className='label' >
+            <div className={styles.label}>
               <label>
                 {text.description}:{" "}
                 {slide.readonly ? (
                   slide.description
                 ) : (
                   <textarea
-                    className='input'
+                    className={styles.input}
                     readOnly={slide.readonly}
                     value={slide.description}
                     onChange={(e) =>
@@ -228,23 +236,31 @@ const Carousel:React.FC<TypeLanguage> = ({language}) => {
                 )}
               </label>
             </div>
-            <div className='button-group form'>
-              <button className='button' onClick={() => handleDeleteSlide(slide.id)}>
+            <div className={`${styles.buttonGroup} ${styles.form}`}>
+              <button
+                className={styles.button}
+                onClick={() => handleDeleteSlide(slide.id)}
+              >
                 {text.deleteSlide}
               </button>
-              <button className='button' onClick={() => handleEditSlide(slide.id)}>
+              <button
+                className={styles.button}
+                onClick={() => handleEditSlide(slide.id)}
+              >
                 {slide.readonly ? text.edit : text.save}
               </button>
             </div>
           </div>
         ))}
-        <button className='button create' onClick={handleAddSlide}>{text.createNewSlide}</button>
+        <button
+          className={`${styles.button} ${styles.create}`}
+          onClick={handleAddSlide}
+        >
+          {text.createNewSlide}
+        </button>
       </div>
     </div>
   );
 };
-
-
-
 
 export default Carousel;
