@@ -1,14 +1,16 @@
+import { makeAutoObservable } from 'mobx';
+
 import type { Lang } from '../../typings';
 
 class RootStore {
-    private _language: Lang = 'en';
+    language: Lang = 'en';
 
-    get language() {
-        return this._language;
+    constructor() {
+        makeAutoObservable(this);
     }
 
-    set language(lang: Lang) {
-        this._language = lang;
+    setLanguage(lang: Lang) {
+        this.language = lang;
     }
 }
 

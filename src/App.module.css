@@ -1,36 +1,14 @@
 .App {
     top: 200px;
     display: flex;
+    flex-direction: column;
     margin: auto;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 
     min-height: 80vh;
     max-width: 60vh;
     background: #151b23;
 
     color: white;
-}
-
-.button {
-    background-color: #151b23;
-    color: white;
-    border: 1px solid rgb(61, 68, 77);
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition:
-        background-color 200ms ease,
-        border-color 200ms ease;
-}
-.button.create {
-    display: flex;
-    margin: auto;
-}
-.button:hover {
-    background-color: #30363d;
-    border-color: #8b949e;
-}
-.button:active {
-    background-color: #161b22;
 }

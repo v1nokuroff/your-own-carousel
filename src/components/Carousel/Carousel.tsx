@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+import { observer } from 'mobx-react-lite';
+
+import { useStores } from '../../system/store';
 import { translations } from '../../translations';
 
 import styles from './Carousel.module.css';
@@ -15,11 +18,9 @@ interface ItemProps {
     readonly: boolean;
 }
 
-type TypeLanguage = {
-    language: 'ru' | 'en';
-};
-
-const Carousel = ({ language }: TypeLanguage) => {
+const Carousel = observer(() => {
+    const { rootStore } = useStores();
+    const { language } = rootStore;
     const text = translations[language];
 
     const [slides, setSlides] = useState<ItemProps[]>([]);
@@ -219,6 +220,6 @@ const Carousel = ({ language }: TypeLanguage) => {
             </div>
         </div>
     );
-};
+});
 
 export default Carousel;
