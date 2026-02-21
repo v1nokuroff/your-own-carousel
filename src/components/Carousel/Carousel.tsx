@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { useStores } from '../../system/store';
-import { translations } from '../../translations';
+import { useStores } from '@/root/store';
+import { translations } from '@/translations';
 
 import styles from './Carousel.module.css';
 

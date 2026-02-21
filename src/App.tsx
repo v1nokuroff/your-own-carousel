@@ -1,10 +1,11 @@
 import React from 'react';
 
-import styles from './App.module.css';
-import Carousel from './components/Carousel/Carousel';
-import { LanguageSwitcher } from './system/LanguageSwitcher/LanguageSwitcher';
+import Carousel from '@/components/Carousel/Carousel';
+import { LanguageSwitcher } from '@/root/LanguageSwitcher/LanguageSwitcher';
 
-const App = () => {
+import styles from './App.module.css';
+
+export const App = () => {
     return (
         <div className={styles.App}>
             <LanguageSwitcher />
@@ -12,5 +13,3 @@ const App = () => {
         </div>
     );
 };
-
-export default App;

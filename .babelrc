@@ -2,7 +2,7 @@
     "presets": ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
     "plugins": [
         ["@babel/plugin-transform-runtime", { "regenerator": true }],
-        ["@babel/plugin-proposal-class-properties", { "loose": false }],
+        ["@babel/plugin-transform-class-properties", { "loose": false }],
         [
             "module-resolver",
             {
@@ -13,7 +13,8 @@
                     "@/assets": "./src/assets",
                     "@/utils": "./src/utils",
                     "@/components": "./src/components",
-                    "@/store": "./src/store"
+                    "@/store": "./src/store",
+                    "@/translations": "./src/translations"
                 }
             }
         ]
