@@ -1,9 +1,8 @@
 import React, { useCallback } from 'react';
 
+import { Button } from '@/components/Button/Button';
+import { useStores } from '@/root/store';
 import { Lang } from '@/typings';
-
-import { Button } from '../../components/Button/Button';
-import { useStores } from '../store';
 
 import styles from './LanguageSwitcher.module.css';
 

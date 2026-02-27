@@ -13,7 +13,8 @@
             "@/components/*": ["./src/components/*"],
             "@/store/*": ["src/system/store/*"],
             "@/typings": ["./src/typings"],
-            "@/typings/*": ["./src/typings/*"]
+            "@/typings/*": ["./src/typings/*"],
+            "@/translations": ["./src/translations"]
         },
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,

@@ -2,40 +2,16 @@
     "name": "my-app",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "homepage": "https://v1nokuroff.github.io/your-own-carousel",
-    "dependencies": {
-        "@testing-library/jest-dom": "^5.17.0",
-        "@testing-library/react": "^13.4.0",
-        "@testing-library/user-event": "^13.5.0",
-        "@types/jest": "^27.5.2",
-        "@types/node": "^16.18.44",
-        "@types/react": "^18.2.21",
-        "@types/react-dom": "^18.2.7",
-        "classnames": "^2.5.1",
-        "mobx": "^6.15.0",
-        "mobx-react-lite": "^4.1.1",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-scripts": "5.0.1",
-        "typescript": "^4.9.5",
-        "web-vitals": "^2.1.4"
-    },
     "scripts": {
+        "start": "webpack serve --mode development",
+        "build": "NODE_ENV=production webpack --mode production",
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
         "lint": "npm run lint:eslint && npm run lint:prettier",
         "lint:eslint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
         "lint:prettier": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,json}\""
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
     },
     "browserslist": {
         "production": [
@@ -49,9 +25,44 @@
             "last 1 safari version"
         ]
     },
+    "dependencies": {
+        "@babel/runtime": "7.28.6",
+        "classnames": "^2.5.1",
+        "mobx": "^6.15.0",
+        "mobx-react-lite": "^4.1.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
     "devDependencies": {
+        "@babel/core": "^7.29.0",
+        "@babel/plugin-transform-class-properties": "^7.28.6",
+        "@babel/plugin-transform-runtime": "^7.29.0",
+        "@babel/preset-env": "^7.29.0",
+        "@babel/preset-react": "^7.28.5",
+        "@babel/preset-typescript": "^7.28.5",
+        "@types/node": "^16.18.44",
+        "@types/react": "^18.2.21",
+        "@types/react-dom": "^18.2.7",
+        "@typescript-eslint/eslint-plugin": "^8.56.0",
+        "@typescript-eslint/parser": "^8.56.0",
+        "babel-loader": "^10.0.0",
+        "babel-plugin-module-resolver": "^5.0.2",
+        "css-loader": "^7.1.4",
+        "eslint": "^9.39.3",
+        "eslint-import-resolver-typescript": "^4.4.4",
         "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.0.1",
         "gh-pages": "^6.3.0",
-        "prettier": "^3.8.1"
+        "html-webpack-plugin": "^5.6.6",
+        "mini-css-extract-plugin": "^2.10.0",
+        "postcss-loader": "^8.2.1",
+        "prettier": "^3.8.1",
+        "style-loader": "^4.0.0",
+        "terser-webpack-plugin": "^5.3.16",
+        "typescript": "4.9.5",
+        "webpack": "5.105.2",
+        "webpack-cli": "^6.0.1",
+        "webpack-dev-server": "^5.2.3"
     }
 }
