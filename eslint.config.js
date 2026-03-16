@@ -58,13 +58,15 @@ export default [
             // Console
             'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
 
+            // Curly braces
+            curly: ['error', 'all'],
+
             // React
             'react/react-in-jsx-scope': 'off',
             'react/prop-types': 'off',
 
             // React Hooks
             'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'warn',
 
             // Imports
             'import/first': 'error',

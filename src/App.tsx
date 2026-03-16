@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Carousel from '@/components/Carousel/Carousel';
+import { Carousel } from '@/modules/Carousel/Carousel';
 import { LanguageSwitcher } from '@/root/LanguageSwitcher/LanguageSwitcher';
 
 import styles from './App.module.css';
