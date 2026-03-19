@@ -1,69 +1,36 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 
 import cn from 'classnames';
 import { observer } from 'mobx-react-lite';
 
 import { Button } from '@/components/Button/Button';
 import { useTranslations } from '@/root/hooks/useTranslations';
+import { useStores } from '@/root/store';
 
 import styles from './Carousel.module.css';
-import { defaultSlide } from './constants';
-import { CarouselItem } from './typings';
+import { useSlidesActions } from './hooks/useSlidesActions';
 
 export const Carousel = observer(() => {
     const text = useTranslations();
-
-    const [slides, setSlides] = useState<CarouselItem[]>([]);
-    const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
+    const { carouselStore } = useStores();
+    const { slides, enabledSlides, currentSlide } = carouselStore;
+    const { handleAddSlide, handleDeleteSlide, handleEditSlide, handleInputChange } = useSlidesActions();
 
     // Carousel hook
     useEffect(() => {
-        const enabledSlides = slides.filter((slide) => slide.enabled).sort((a, b) => a.position - b.position);
-
         if (enabledSlides.length === 0) {
             return;
         }
 
-        const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
-        const delay = currentSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
+        const activeSlide = enabledSlides[carouselStore.currentSlideIndex % enabledSlides.length];
+        const delay = activeSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
 
         const timer = setTimeout(() => {
-            setCurrentSlideIndex((prevIndex: number) => (prevIndex + 1) % enabledSlides.length);
+            carouselStore.nextSlide();
         }, delay);
 
         return () => clearTimeout(timer);
-    }, [currentSlideIndex, slides]);
-
-    const handleInputChange = (id: number, field: keyof CarouselItem, value: string | boolean | number) => {
-        setSlides((prevSlides) => prevSlides.map((slide) => (slide.id === id ? { ...slide, [field]: value } : slide)));
-    };
-
-    const handleAddSlide = useCallback(() => {
-        const newSlide: CarouselItem = { ...defaultSlide, position: slides.length + 1 };
-        setSlides((prevSlides) => [...prevSlides, newSlide]);
-    }, [slides, setSlides]);
-
-    const handleDeleteSlide = useCallback((id: number) => {
-        setSlides((prevSlides) => prevSlides.filter((slide) => slide.id !== id));
-    }, []);
-
-    const handleEditSlide = useCallback(
-        (id: number) => {
-            const slide = slides.find((s) => s.id === id);
-            if (slide && !slide.path) {
-                alert(text.fillData);
-                return;
-            }
-            setSlides((prevSlides) =>
-                prevSlides.map((s) => (s.id === id ? { ...s, isDrafted: !s.isDrafted, enabled: false } : s))
-            );
-        },
-        [slides, text]
-    );
-
-    const enabledSlides = slides.filter((slide) => slide.enabled).sort((a, b) => a.position - b.position);
-
-    const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
+    }, [carouselStore, carouselStore.currentSlideIndex, enabledSlides]);
 
     return (
         <div className={styles.container}>
@@ -98,7 +65,7 @@ export const Carousel = observer(() => {
                             disabled={isDrafted}
                             type="checkbox"
                             checked={enabled}
-                            onChange={(e) => handleInputChange(id, 'enabled', e.target.checked)}
+                            onChange={({ target: { checked } }) => handleInputChange(id, 'enabled', checked)}
                         />
                         <label>{text.enable}</label>
                         <div>
@@ -111,7 +78,7 @@ export const Carousel = observer(() => {
                                         readOnly={!isDrafted}
                                         type="number"
                                         value={delay}
-                                        onChange={(e) => handleInputChange(id, 'delay', +e.target.value)}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'delay', +value)}
                                     />
                                 ) : (
                                     delay
@@ -127,7 +94,8 @@ export const Carousel = observer(() => {
                                         readOnly={!isDrafted}
                                         type="number"
                                         value={position}
-                                        onChange={(e) => handleInputChange(id, 'position', +e.target.value)}
+                                        min={1}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'position', +value)}
                                     />
                                 ) : (
                                     position
@@ -143,7 +111,7 @@ export const Carousel = observer(() => {
                                         readOnly={!isDrafted}
                                         type="text"
                                         value={link}
-                                        onChange={(e) => handleInputChange(id, 'link', e.target.value)}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'link', value)}
                                     />
                                 ) : (
                                     link
@@ -152,14 +120,14 @@ export const Carousel = observer(() => {
                         </div>
                         <div className={styles.label}>
                             <label>
-                                {text.imageURL}:{' '}
+                                {text.imageURL}*:{' '}
                                 {isDrafted ? (
                                     <input
                                         className={styles.input}
                                         readOnly={!isDrafted}
                                         type="text"
                                         value={path}
-                                        onChange={(e) => handleInputChange(id, 'path', e.target.value)}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'path', value)}
                                     />
                                 ) : (
                                     path
@@ -174,7 +142,9 @@ export const Carousel = observer(() => {
                                         className={styles.input}
                                         readOnly={!isDrafted}
                                         value={description}
-                                        onChange={(e) => handleInputChange(id, 'description', e.target.value)}
+                                        onChange={({ target: { value } }) =>
+                                            handleInputChange(id, 'description', value)
+                                        }
                                         rows={3}
                                         style={{ width: '100%', resize: 'vertical' }}
                                     />
