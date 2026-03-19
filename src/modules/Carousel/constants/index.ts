@@ -7,5 +7,5 @@ export const defaultSlide: Omit<CarouselItem, 'position'> = {
     link: '',
     path: '',
     description: '',
-    readonly: false,
+    isDrafted: true,
 };
