@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 
+import { carouselStore } from './CarouselStore';
 import { rootStore } from './RootStore';
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 
 export const stores = {
     rootStore,
+    carouselStore,
 };
 
 export type Stores = typeof stores;

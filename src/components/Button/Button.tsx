@@ -7,7 +7,7 @@ import styles from './Button.module.css';
 type ButtonProps = {
     onClick: () => void;
     children: React.ReactNode;
-    className: string;
+    className?: string;
 };
 
 export const Button = ({ onClick, children, className }: ButtonProps) => {

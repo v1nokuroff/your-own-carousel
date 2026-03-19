@@ -1,72 +1,36 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
+import cn from 'classnames';
 import { observer } from 'mobx-react-lite';
 
 import { Button } from '@/components/Button/Button';
+import { useTranslations } from '@/root/hooks/useTranslations';
 import { useStores } from '@/root/store';
-import { translations } from '@/translations';
 
 import styles from './Carousel.module.css';
-import { defaultSlide } from './constants';
-import { CarouselItem } from './typings';
+import { useSlidesActions } from './hooks/useSlidesActions';
 
 export const Carousel = observer(() => {
-    const { rootStore } = useStores();
-    const { language } = rootStore;
-
-    const text = useMemo(() => translations[language], [language]);
-
-    const [slides, setSlides] = useState<CarouselItem[]>([]);
-    const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
+    const text = useTranslations();
+    const { carouselStore } = useStores();
+    const { slides, enabledSlides, currentSlide } = carouselStore;
+    const { handleAddSlide, handleDeleteSlide, handleEditSlide, handleInputChange } = useSlidesActions();
 
     // Carousel hook
     useEffect(() => {
-        const enabledSlides = slides.filter((slide) => slide.enabled).sort((a, b) => a.position - b.position);
-
         if (enabledSlides.length === 0) {
             return;
         }
 
-        const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
-        const delay = currentSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
+        const activeSlide = enabledSlides[carouselStore.currentSlideIndex % enabledSlides.length];
+        const delay = activeSlide.delay * 1000 || 3000; // Delay in milliseconds, default to 3 seconds
 
         const timer = setTimeout(() => {
-            setCurrentSlideIndex((prevIndex: number) => (prevIndex + 1) % enabledSlides.length);
+            carouselStore.nextSlide();
         }, delay);
 
         return () => clearTimeout(timer);
-    }, [currentSlideIndex, slides]);
-
-    const handleInputChange = (id: number, field: keyof CarouselItem, value: string | boolean | number) => {
-        setSlides((prevSlides) => prevSlides.map((slide) => (slide.id === id ? { ...slide, [field]: value } : slide)));
-    };
-
-    const handleAddSlide = useCallback(() => {
-        const newSlide: CarouselItem = { ...defaultSlide, position: slides.length + 1 };
-        setSlides((prevSlides) => [...prevSlides, newSlide]);
-    }, [slides, setSlides]);
-
-    const handleDeleteSlide = useCallback((id: number) => {
-        setSlides((prevSlides) => prevSlides.filter((slide) => slide.id !== id));
-    }, []);
-
-    const handleEditSlide = useCallback(
-        (id: number) => {
-            const slide = slides.find((s) => s.id === id);
-            if (slide && !slide.path) {
-                alert(text.fillData);
-                return;
-            }
-            setSlides((prevSlides) =>
-                prevSlides.map((s) => (s.id === id ? { ...s, readonly: !s.readonly, enabled: false } : s))
-            );
-        },
-        [slides, language]
-    );
-
-    const enabledSlides = slides.filter((slide) => slide.enabled).sort((a, b) => a.position - b.position);
-
-    const currentSlide = enabledSlides[currentSlideIndex % enabledSlides.length];
+    }, [carouselStore, carouselStore.currentSlideIndex, enabledSlides]);
 
     return (
         <div className={styles.container}>
@@ -94,112 +58,110 @@ export const Carousel = observer(() => {
             {/* Creating and editing slides Block */}
             <div className={styles.editor}>
                 <h2 style={{ textAlign: 'center' }}>{text.slideManagement}</h2>
-                {slides.map(({ id, enabled, readonly, delay, position, link, path, description }) => (
+                {slides.map(({ id, enabled, isDrafted, delay, position, link, path, description }) => (
                     <div className={styles.slideForm} key={id}>
                         <input
-                            className={`${styles.input} ${styles.checkbox}`}
-                            readOnly={readonly}
+                            className={cn(styles.input, styles.checkbox)}
+                            disabled={isDrafted}
                             type="checkbox"
                             checked={enabled}
-                            onChange={
-                                (e) => handleInputChange(id, 'enabled', e.target.checked)
-                                //   handleEditSlide(slide.id, 'enable')
-                            }
+                            onChange={({ target: { checked } }) => handleInputChange(id, 'enabled', checked)}
                         />
                         <label>{text.enable}</label>
                         <div>
                             <label>
                                 {text.delay}:{' '}
-                                {readonly ? (
-                                    delay
-                                ) : (
+                                {isDrafted ? (
                                     <input
                                         className={styles.input}
                                         style={{ width: '300px' }}
-                                        readOnly={readonly}
+                                        readOnly={!isDrafted}
                                         type="number"
                                         value={delay}
-                                        onChange={(e) => handleInputChange(id, 'delay', +e.target.value)}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'delay', +value)}
                                     />
+                                ) : (
+                                    delay
                                 )}
                             </label>
                         </div>
                         <div>
                             <label>
                                 {text.position}:{' '}
-                                {readonly ? (
-                                    position
-                                ) : (
+                                {isDrafted ? (
                                     <input
                                         className={styles.input}
-                                        readOnly={readonly}
+                                        readOnly={!isDrafted}
                                         type="number"
                                         value={position}
-                                        onChange={(e) => handleInputChange(id, 'position', +e.target.value)}
+                                        min={1}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'position', +value)}
                                     />
+                                ) : (
+                                    position
                                 )}
                             </label>
                         </div>
                         <div className={styles.label}>
                             <label>
                                 {text.link}:{' '}
-                                {readonly ? (
-                                    link
-                                ) : (
+                                {isDrafted ? (
                                     <input
                                         className={styles.input}
-                                        readOnly={readonly}
+                                        readOnly={!isDrafted}
                                         type="text"
                                         value={link}
-                                        onChange={(e) => handleInputChange(id, 'link', e.target.value)}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'link', value)}
                                     />
+                                ) : (
+                                    link
                                 )}
                             </label>
                         </div>
                         <div className={styles.label}>
                             <label>
-                                {text.imageURL}:{' '}
-                                {readonly ? (
-                                    path
-                                ) : (
+                                {text.imageURL}*:{' '}
+                                {isDrafted ? (
                                     <input
                                         className={styles.input}
-                                        readOnly={readonly}
+                                        readOnly={!isDrafted}
                                         type="text"
                                         value={path}
-                                        onChange={(e) => handleInputChange(id, 'path', e.target.value)}
+                                        onChange={({ target: { value } }) => handleInputChange(id, 'path', value)}
                                     />
+                                ) : (
+                                    path
                                 )}
                             </label>
                         </div>
                         <div className={styles.label}>
                             <label>
                                 {text.description}:{' '}
-                                {readonly ? (
-                                    description
-                                ) : (
+                                {isDrafted ? (
                                     <textarea
                                         className={styles.input}
-                                        readOnly={readonly}
+                                        readOnly={!isDrafted}
                                         value={description}
-                                        onChange={(e) => handleInputChange(id, 'description', e.target.value)}
+                                        onChange={({ target: { value } }) =>
+                                            handleInputChange(id, 'description', value)
+                                        }
                                         rows={3}
                                         style={{ width: '100%', resize: 'vertical' }}
                                     />
+                                ) : (
+                                    description
                                 )}
                             </label>
                         </div>
-                        <div className={`${styles.buttonGroup} ${styles.form}`}>
-                            <Button className={styles.button} onClick={() => handleDeleteSlide(id)}>
-                                {text.deleteSlide}
-                            </Button>
+                        <div className={styles.buttonGroup}>
+                            <Button onClick={() => handleDeleteSlide(id)}>{text.deleteSlide}</Button>
                             <Button className={styles.button} onClick={() => handleEditSlide(id)}>
-                                {readonly ? text.edit : text.save}
+                                {isDrafted ? text.save : text.edit}
                             </Button>
                         </div>
                     </div>
                 ))}
-                <Button className={`${styles.button} ${styles.create}`} onClick={handleAddSlide}>
+                <Button className={styles.createBtn} onClick={handleAddSlide}>
                     {text.createNewSlide}
                 </Button>
             </div>

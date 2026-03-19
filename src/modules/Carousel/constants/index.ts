@@ -1,11 +1,10 @@
 import { CarouselItem } from '../typings';
 
-export const defaultSlide: Omit<CarouselItem, 'position'> = {
-    id: Date.now(),
+export const DEFAULT_SLIDE: Omit<CarouselItem, 'position' | 'id'> = {
     enabled: false,
     delay: 3,
     link: '',
     path: '',
     description: '',
-    readonly: false,
+    isDrafted: true,
 };

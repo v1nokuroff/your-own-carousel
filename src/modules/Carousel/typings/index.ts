@@ -6,5 +6,5 @@ export type CarouselItem = {
     link?: string;
     path?: string;
     description?: string;
-    readonly: boolean;
+    isDrafted: boolean;
 };
