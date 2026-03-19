@@ -29,6 +29,7 @@
         "@babel/runtime": "7.28.6",
         "classnames": "^2.5.1",
         "mobx": "^6.15.0",
+        "mobx-persist-store": "1.1.8",
         "mobx-react-lite": "^4.1.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"

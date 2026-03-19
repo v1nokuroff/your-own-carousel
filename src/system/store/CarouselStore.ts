@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
 
 import { DEFAULT_SLIDE } from '@/modules/Carousel/constants';
 import { CarouselItem } from '@/modules/Carousel/typings';
@@ -9,6 +10,16 @@ class CarouselStore {
 
     constructor() {
         makeAutoObservable(this);
+
+        const storage = globalThis?.localStorage || undefined;
+
+        if (storage) {
+            void makePersistable(this, {
+                name: 'CarouselStore',
+                properties: ['slides'],
+                storage,
+            });
+        }
     }
 
     get enabledSlides() {

@@ -1,20 +1,27 @@
 import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
 
 import type { Lang } from '@/typings';
 
 class RootStore {
-    private _language: Lang = 'en';
+    language: Lang = 'en';
 
     constructor() {
         makeAutoObservable(this);
-    }
 
-    get language() {
-        return this._language;
+        const storage = globalThis?.localStorage || undefined;
+
+        if (storage) {
+            void makePersistable(this, {
+                name: 'RootStore',
+                properties: ['language'],
+                storage,
+            });
+        }
     }
 
     setLanguage(lang: Lang) {
-        this._language = lang;
+        this.language = lang;
     }
 }
 
