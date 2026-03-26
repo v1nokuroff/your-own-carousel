@@ -4,22 +4,18 @@ import { makePersistable } from 'mobx-persist-store';
 import { DEFAULT_SLIDE } from '@/modules/Carousel/constants';
 import { CarouselItem } from '@/modules/Carousel/typings';
 
-class CarouselStore {
+export class CarouselStore {
     slides: CarouselItem[] = [];
     currentSlideIndex = 0;
 
     constructor() {
         makeAutoObservable(this);
 
-        const storage = globalThis?.localStorage || undefined;
-
-        if (storage) {
-            void makePersistable(this, {
-                name: 'CarouselStore',
-                properties: ['slides'],
-                storage,
-            });
-        }
+        void makePersistable(this, {
+            name: 'CarouselStore',
+            properties: ['slides'],
+            storage: localStorage,
+        });
     }
 
     get enabledSlides() {

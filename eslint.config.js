@@ -30,6 +30,7 @@ export default [
                 console: 'readonly',
                 SVGElement: 'readonly',
                 SVGSVGElement: 'readonly',
+                localStorage: 'readonly',
             },
         },
         plugins: {

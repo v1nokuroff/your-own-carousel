@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { carouselStore } from './CarouselStore';
+import { carouselStore } from './CarouselStore/CarouselStore';
 import { rootStore } from './RootStore';
 
 type Props = {
