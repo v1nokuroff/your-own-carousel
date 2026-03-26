@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import styles from './Button.module.css';
 
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     onClick: () => void;
     children: React.ReactNode;
     className?: string;
