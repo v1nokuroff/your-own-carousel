@@ -6,6 +6,7 @@ module.exports = {
     extensionsToTreatAsEsm: ['.ts', '.tsx'],
     moduleNameMapper: {
         '^(\\.{1,2}/.*)\\.js$': '$1',
+        '\\.(css|less|scss|sass)$': '<rootDir>/src/test/styleMock.ts',
         '^@/root/(.*)$': '<rootDir>/src/system/$1',
         '^@/modules/(.*)$': '<rootDir>/src/modules/$1',
         '^@/assets/(.*)$': '<rootDir>/src/assets/$1',
