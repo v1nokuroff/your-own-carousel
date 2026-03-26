@@ -27,6 +27,7 @@ export default [
                 alert: 'readonly',
                 document: 'readonly',
                 HTMLElement: 'readonly',
+                HTMLDivElement: 'readonly',
                 HTMLButtonElement: 'readonly',
                 HTMLLabelElement: 'readonly',
                 HTMLInputElement: 'readonly',
