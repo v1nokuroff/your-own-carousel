@@ -1,14 +1,13 @@
-.App {
-    top: 200px;
+.app {
     display: flex;
     flex-direction: column;
-    margin: auto;
-    justify-content: center;
     align-items: flex-start;
 
-    min-height: 80vh;
-    max-width: 60vh;
+    min-height: 500px;
+    width: 500px;
     background: #151b23;
+    padding: 20px;
+    gap: 20px;
 
     color: white;
 }
