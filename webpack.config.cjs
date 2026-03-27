@@ -2,8 +2,22 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const packageJson = require('./package.json');
 
 const isProduction = process.env.NODE_ENV === 'production';
+const homepage = packageJson.homepage;
+
+const resolvePublicPath = () => {
+    if (!homepage) {
+        return '/';
+    }
+
+    try {
+        return `${new URL(homepage).pathname.replace(/\/$/, '')}/`;
+    } catch {
+        return homepage.startsWith('/') ? `${homepage.replace(/\/$/, '')}/` : '/';
+    }
+};
 
 module.exports = {
     mode: isProduction ? 'production' : 'development',
@@ -14,7 +28,7 @@ module.exports = {
         chunkFilename: isProduction ? 'static/js/[name].[contenthash:8].chunk.js' : 'static/js/[name].chunk.js',
         assetModuleFilename: 'static/media/[name].[hash:8][ext]',
         clean: true,
-        publicPath: '/',
+        publicPath: isProduction ? resolvePublicPath() : '/',
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '.css'],
