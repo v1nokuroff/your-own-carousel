@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useTranslations } from '@/root/hooks/useTranslations';
 import { useStores } from '@/root/store';
 
-import { CarouselItem } from '../typings';
+import { CarouselItem } from '../../configuration/typings';
 
 export const useSlidesActions = () => {
     const { carouselStore } = useStores();

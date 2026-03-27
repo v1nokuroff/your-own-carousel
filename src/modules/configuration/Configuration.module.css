@@ -1,0 +1,33 @@
+.root {
+    border: 1px solid rgb(61, 68, 77);
+    padding: 10px;
+    width: stretch;
+}
+
+.slideForm {
+    padding: 10px 0;
+    border-bottom: 1px solid rgb(61, 68, 77);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.checkbox {
+    margin-left: 0;
+}
+
+.button-group {
+    gap: 10px;
+    display: inline-flex;
+}
+.createBtn {
+    display: flex;
+    margin: auto;
+    margin-top: 10px;
+}

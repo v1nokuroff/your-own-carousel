@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 
-import { DEFAULT_SLIDE } from '@/modules/Carousel/constants';
-import { CarouselItem } from '@/modules/Carousel/typings';
+import { DEFAULT_SLIDE } from '@/modules/configuration/constants';
+import { CarouselItem } from '@/modules/configuration/typings';
 
 export class CarouselStore {
     slides: CarouselItem[] = [];
